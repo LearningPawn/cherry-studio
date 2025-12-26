@@ -14,7 +14,19 @@ on:
   workflow_dispatch:
 
 jobs:
+  check-repository:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ github.repository == 'CherryHQ/cherry-studio' }}
+    steps:
+      - name: Check if running in main repository
+        run: |
+          echo "Running in repository: ${{ github.repository }}"
+          echo "Should run: ${{ github.repository == 'CherryHQ/cherry-studio' }}"
+
   auto-i18n:
+    needs: check-repository
+    if: needs.check-repository.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     name: Auto I18N
     permissions:
