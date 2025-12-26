@@ -41,7 +41,7 @@ const AssistantModelSettings: FC<Props> = ({ assistant, updateAssistant, updateA
   const [customParameters, setCustomParameters] = useState<AssistantSettingCustomParameters[]>(
     assistant?.settings?.customParameters ?? []
   )
-  const [enableTemperature, setEnableTemperature] = useState(assistant?.settings?.enableTemperature ?? true)
+  const [enableTemperature, setEnableTemperature] = useState(assistant?.settings?.enableTemperature ?? false)
 
   const customParametersRef = useRef(customParameters)
 
@@ -135,12 +135,18 @@ const AssistantModelSettings: FC<Props> = ({ assistant, updateAssistant, updateA
           <Input
             value={typeof param.value === 'string' ? param.value : JSON.stringify(param.value, null, 2)}
             onChange={(e) => {
-              try {
-                const jsonValue = JSON.parse(e.target.value)
-                onUpdateCustomParameter(index, 'value', jsonValue)
-              } catch {
-                onUpdateCustomParameter(index, 'value', e.target.value)
-              }
+              // For JSON type parameters, always store the value as a STRING
+              //
+              // Data Flow:
+              // 1. UI stores: { name: "config", value: '{"key":"value"}', type: "json" } ← STRING format
+              // 2. API parses: getCustomParameters() in src/renderer/src/aiCore/utils/reasoning.ts:687-696
+              //                calls JSON.parse() to convert string to object
+              // 3. Request sends: The parsed object is sent to the AI provider
+              //
+              // Previously this code was parsing JSON here and storing
+              // the object directly, which caused getCustomParameters() to fail when trying
+              // to JSON.parse() an already-parsed object.
+              onUpdateCustomParameter(index, 'value', e.target.value)
             }}
           />
         )
@@ -162,7 +168,7 @@ const AssistantModelSettings: FC<Props> = ({ assistant, updateAssistant, updateA
 
   const onReset = () => {
     setTemperature(DEFAULT_ASSISTANT_SETTINGS.temperature)
-    setEnableTemperature(DEFAULT_ASSISTANT_SETTINGS.enableTemperature ?? true)
+    setEnableTemperature(DEFAULT_ASSISTANT_SETTINGS.enableTemperature ?? false)
     setContextCount(DEFAULT_ASSISTANT_SETTINGS.contextCount)
     setEnableMaxTokens(DEFAULT_ASSISTANT_SETTINGS.enableMaxTokens ?? false)
     setMaxTokens(DEFAULT_ASSISTANT_SETTINGS.maxTokens ?? 0)

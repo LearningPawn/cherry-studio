@@ -1,6 +1,7 @@
 // src/main/services/agents/services/claudecode/index.ts
 import { EventEmitter } from 'node:events'
 import { createRequire } from 'node:module'
+import path from 'node:path'
 
 import type {
   CanUseTool,
@@ -14,7 +15,10 @@ import { query } from '@anthropic-ai/claude-agent-sdk'
 import { loggerService } from '@logger'
 import { config as apiConfigService } from '@main/apiServer/config'
 import { validateModelId } from '@main/apiServer/utils'
+import { isWin } from '@main/constant'
+import { autoDiscoverGitBash } from '@main/utils/process'
 import getLoginShellEnvironment from '@main/utils/shell-env'
+import { withoutTrailingApiVersion } from '@shared/utils'
 import { app } from 'electron'
 
 import type { GetAgentSessionResponse } from '../..'
@@ -106,6 +110,16 @@ class ClaudeCodeService implements AgentServiceInterface {
       Object.entries(loginShellEnv).filter(([key]) => !key.toLowerCase().endsWith('_proxy'))
     ) as Record<string, string>
 
+    // Auto-discover Git Bash path on Windows (already logs internally)
+    const customGitBashPath = isWin ? autoDiscoverGitBash() : null
+
+    // Claude Agent SDK builds the final endpoint as `${ANTHROPIC_BASE_URL}/v1/messages`.
+    // To avoid malformed URLs like `/v1/v1/messages`, we normalize the provider host
+    // by stripping any trailing API version (e.g. `/v1`).
+    const anthropicBaseUrl = withoutTrailingApiVersion(
+      modelInfo.provider.anthropicApiHost?.trim() || modelInfo.provider.apiHost
+    )
+
     const env = {
       ...loginShellEnvWithoutProxies,
       // TODO: fix the proxy api server
@@ -114,14 +128,19 @@ class ClaudeCodeService implements AgentServiceInterface {
       // ANTHROPIC_BASE_URL: `http://${apiConfig.host}:${apiConfig.port}/${modelInfo.provider.id}`,
       ANTHROPIC_API_KEY: modelInfo.provider.apiKey,
       ANTHROPIC_AUTH_TOKEN: modelInfo.provider.apiKey,
-      ANTHROPIC_BASE_URL: modelInfo.provider.anthropicApiHost?.trim() || modelInfo.provider.apiHost,
+      ANTHROPIC_BASE_URL: anthropicBaseUrl,
       ANTHROPIC_MODEL: modelInfo.modelId,
       ANTHROPIC_DEFAULT_OPUS_MODEL: modelInfo.modelId,
       ANTHROPIC_DEFAULT_SONNET_MODEL: modelInfo.modelId,
       // TODO: support set small model in UI
       ANTHROPIC_DEFAULT_HAIKU_MODEL: modelInfo.modelId,
       ELECTRON_RUN_AS_NODE: '1',
-      ELECTRON_NO_ATTACH_CONSOLE: '1'
+      ELECTRON_NO_ATTACH_CONSOLE: '1',
+      // Set CLAUDE_CONFIG_DIR to app's userData directory to avoid path encoding issues
+      // on Windows when the username contains non-ASCII characters (e.g., Chinese characters)
+      // This prevents the SDK from using the user's home directory which may have encoding problems
+      CLAUDE_CONFIG_DIR: path.join(app.getPath('userData'), '.claude'),
+      ...(customGitBashPath ? { CLAUDE_CODE_GIT_BASH_PATH: customGitBashPath } : {})
     }
 
     const errorChunks: string[] = []

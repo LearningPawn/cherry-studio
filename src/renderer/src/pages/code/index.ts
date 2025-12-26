@@ -34,7 +34,9 @@ export const CLAUDE_OFFICIAL_SUPPORTED_PROVIDERS = [
   'minimax',
   'longcat',
   SystemProviderIds.qiniu,
-  SystemProviderIds.silicon
+  SystemProviderIds.silicon,
+  SystemProviderIds.mimo,
+  SystemProviderIds.openrouter
 ]
 export const CLAUDE_SUPPORTED_PROVIDERS = [
   'aihubmix',
@@ -62,7 +64,7 @@ export const getCodeToolsApiBaseUrl = (model: Model, type: EndpointType) => {
   const CODE_TOOLS_API_ENDPOINTS = {
     aihubmix: {
       gemini: {
-        api_base_url: 'https://api.aihubmix.com/gemini'
+        api_base_url: 'https://aihubmix.com/gemini'
       }
     },
     deepseek: {

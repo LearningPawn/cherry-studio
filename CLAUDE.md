@@ -12,7 +12,15 @@ This file provides guidance to AI coding assistants when working with code in th
 - **Always propose before executing**: Before making any changes, clearly explain your planned approach and wait for explicit user approval to ensure alignment and prevent unwanted modifications.
 - **Lint, test, and format before completion**: Coding tasks are only complete after running `yarn lint`, `yarn test`, and `yarn format` successfully.
 - **Write conventional commits**: Commit small, focused changes using Conventional Commit messages (e.g., `feat:`, `fix:`, `refactor:`, `docs:`).
-- **Follow PR template**: When submitting pull requests, follow the template in `.github/pull_request_template.md` to ensure complete context and documentation.
+
+## Pull Request Workflow (CRITICAL)
+
+When creating a Pull Request, you MUST:
+
+1. **Read the PR template first**: Always read `.github/pull_request_template.md` before creating the PR
+2. **Follow ALL template sections**: Structure the `--body` parameter to include every section from the template
+3. **Never skip sections**: Include all sections even if marking them as N/A or "None"
+4. **Use proper formatting**: Match the template's markdown structure exactly (headings, checkboxes, code blocks)
 
 ## Development Commands
 
@@ -20,7 +28,7 @@ This file provides guidance to AI coding assistants when working with code in th
 - **Development**: `yarn dev` - Runs Electron app in development mode with hot reload
 - **Debug**: `yarn debug` - Starts with debugging enabled, use `chrome://inspect` to attach debugger
 - **Build Check**: `yarn build:check` - **REQUIRED** before commits (lint + test + typecheck)
-  - If having i18n sort issues, run `yarn sync:i18n` first to sync template
+  - If having i18n sort issues, run `yarn i18n:sync` first to sync template
   - If having formatting issues, run `yarn format` first
 - **Test**: `yarn test` - Run all tests (Vitest) across main and renderer processes
 - **Single Test**:
@@ -32,20 +40,23 @@ This file provides guidance to AI coding assistants when working with code in th
 ## Project Architecture
 
 ### Electron Structure
+
 - **Main Process** (`src/main/`): Node.js backend with services (MCP, Knowledge, Storage, etc.)
 - **Renderer Process** (`src/renderer/`): React UI with Redux state management
 - **Preload Scripts** (`src/preload/`): Secure IPC bridge
 
 ### Key Components
+
 - **AI Core** (`src/renderer/src/aiCore/`): Middleware pipeline for multiple AI providers.
 - **Services** (`src/main/services/`): MCPService, KnowledgeService, WindowService, etc.
 - **Build System**: Electron-Vite with experimental rolldown-vite, yarn workspaces.
 - **State Management**: Redux Toolkit (`src/renderer/src/store/`) for predictable state.
 
 ### Logging
+
 ```typescript
-import { loggerService } from '@logger'
-const logger = loggerService.withContext('moduleName')
+import { loggerService } from "@logger";
+const logger = loggerService.withContext("moduleName");
 // Renderer: loggerService.initWindowSource('windowName') first
-logger.info('message', CONTEXT)
+logger.info("message", CONTEXT);
 ```

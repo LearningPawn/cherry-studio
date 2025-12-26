@@ -134,56 +134,68 @@ artifactBuildCompleted: scripts/artifact-build-completed.js
 releaseInfo:
   releaseNotes: |
     <!--LANG:en-->
-    What's New in v1.7.0-rc.3
+    Cherry Studio 1.7.7 - New Models & UI Improvements
 
-    ✨ New Features:
-    - Provider: Added Silicon provider support for Anthropic API compatibility
-    - Provider: AIHubMix support for nano banana
+    This release adds new AI model support, OpenRouter integration, and UI redesigns.
 
-    🐛 Bug Fixes:
-    - i18n: Clean up translation tags and untranslated strings
-    - Provider: Fixed Silicon provider code list
-    - Provider: Fixed Poe API reasoning parameters for GPT-5 and reasoning models
-    - Provider: Fixed duplicate /v1 in Anthropic API endpoints
-    - Provider: Fixed Azure provider handling in AI SDK integration
-    - Models: Added Claude Opus 4.5 pattern to THINKING_TOKEN_MAP
-    - Models: Improved Gemini reasoning and message handling
-    - Models: Fixed custom parameters for Gemini models
-    - Models: Fixed qwen-mt-flash text delta support
-    - Models: Fixed Groq verbosity setting
-    - UI: Fixed quota display and quota tips
-    - UI: Fixed web search button condition
-    - Settings: Fixed updateAssistantPreset reducer to properly update preset
-    - Settings: Respect enableMaxTokens setting when maxTokens is not configured
-    - SDK: Fixed header merging logic in AI SDK
+    ✨ New Features
+    - [Models] Add GLM-4.7 and MiniMax-M2.1 model support
+    - [Provider] Add OpenRouter provider support
+    - [OVMS] Upgrade to 2025.4 with Qwen3-4B-int4-ov preset model
+    - [OVMS] Close OVMS process when app quits
+    - [Search] Show keyword-adjacent snippets in history search
+    - [Painting] Add extend_params support for DMX painting
+    - [UI] Add MCP logo and replace Hammer icon
 
-    ⚡ Improvements:
-    - SDK: Upgraded @anthropic-ai/claude-agent-sdk to 0.1.53
+    🎨 UI Improvements
+    - [Notes] Move notes settings to popup in NotesPage for quick access
+    - [WebSearch] Redesign settings with two-column layout and "Set as Default" button
+    - [Display] Improve font selector for long font names
+    - [Transfer] Rename LanDrop to LanTransfer
+
+    🐛 Bug Fixes
+    - [API] Correct aihubmix Anthropic API path
+    - [OpenRouter] Support GPT-5.1/5.2 reasoning effort 'none' and improve error handling
+    - [Thinking] Fix interleaved thinking support
+    - [Memory] Fix retrieval issues and enable database backup
+    - [Settings] Update default assistant settings to disable temperature
+    - [OpenAI] Add persistent server configuration support
+    - [Azure] Normalize Azure endpoint
+    - [MCP] Check system npx/uvx before falling back to bundled binaries
+    - [Prompt] Improve language instruction clarity
+    - [Models] Include GPT5.2 series in verbosity check
+    - [URL] Enhance urlContext validation for supported providers and models
 
     <!--LANG:zh-CN-->
-    v1.7.0-rc.3 更新内容
+    Cherry Studio 1.7.7 - 新模型与界面改进
 
-    ✨ 新功能:
-    - 提供商：新增 Silicon 提供商对 Anthropic API 的兼容性支持
-    - 提供商：AIHubMix 支持 nano banana
+    本次更新添加了新 AI 模型支持、OpenRouter 集成以及界面重新设计。
 
-    🐛 问题修复:
-    - 国际化：清理翻译标签和未翻译字符串
-    - 提供商：修复 Silicon 提供商代码列表
-    - 提供商：修复 Poe API 对 GPT-5 和推理模型的推理参数
-    - 提供商：修复 Anthropic API 端点重复 /v1 问题
-    - 提供商：修复 Azure 提供商在 AI SDK 集成中的处理
-    - 模型：Claude Opus 4.5 添加到 THINKING_TOKEN_MAP
-    - 模型：改进 Gemini 推理和消息处理
-    - 模型：修复 Gemini 模型自定义参数
-    - 模型：修复 qwen-mt-flash text delta 支持
-    - 模型：修复 Groq verbosity 设置
-    - 界面：修复配额显示和配额提示
-    - 界面：修复 Web 搜索按钮条件
-    - 设置：修复 updateAssistantPreset reducer 正确更新 preset
-    - 设置：尊重 enableMaxTokens 设置
-    - SDK：修复 AI SDK 中 header 合并逻辑
+    ✨ 新功能
+    - [模型] 添加 GLM-4.7 和 MiniMax-M2.1 模型支持
+    - [服务商] 添加 OpenRouter 服务商支持
+    - [OVMS] 升级至 2025.4，新增 Qwen3-4B-int4-ov 预设模型
+    - [OVMS] 应用退出时关闭 OVMS 进程
+    - [搜索] 历史搜索显示关键词上下文片段
+    - [绘图] DMX 绘图添加扩展参数支持
+    - [界面] 添加 MCP 图标并替换锤子图标
 
-    ⚡ 改进:
-    - SDK：升级 @anthropic-ai/claude-agent-sdk 到 0.1.53
+    🎨 界面改进
+    - [笔记] 将笔记设置移至笔记页弹窗，快速访问无需离开当前页面
+    - [网页搜索] 采用两栏布局重新设计设置界面，添加"设为默认"按钮
+    - [显示] 改进长字体名称的字体选择器
+    - [传输] LanDrop 重命名为 LanTransfer
+
+    🐛 问题修复
+    - [API] 修复 aihubmix Anthropic API 路径
+    - [OpenRouter] 支持 GPT-5.1/5.2 reasoning effort 'none' 并改进错误处理
+    - [思考] 修复交错思考支持
+    - [记忆] 修复检索问题并启用数据库备份
+    - [设置] 更新默认助手设置禁用温度
+    - [OpenAI] 添加持久化服务器配置支持
+    - [Azure] 规范化 Azure 端点
+    - [MCP] 优先检查系统 npx/uvx 再回退到内置二进制文件
+    - [提示词] 改进语言指令清晰度
+    - [模型] GPT5.2 系列添加到 verbosity 检查
+    - [URL] 增强 urlContext 对支持的服务商和模型的验证
     <!--LANG:END-->
